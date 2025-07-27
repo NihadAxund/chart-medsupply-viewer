@@ -2,7 +2,10 @@ import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CalendarIcon, TrendingUpIcon, TrendingDownIcon, PackageIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import {
   LineChart,
   Line,
@@ -92,6 +95,11 @@ const MedicalSupplyDashboard: React.FC = () => {
   
   const mockData = useMemo(() => generateMockData(), []);
   
+  // Get all available months for date selection
+  const availableMonths = useMemo(() => 
+    mockData.map(item => item.month), [mockData]
+  );
+  
   const filteredData = useMemo(() => {
     const startIndex = mockData.findIndex(item => item.month === dateRange.start);
     const endIndex = mockData.findIndex(item => item.month === dateRange.end);
@@ -144,19 +152,73 @@ const MedicalSupplyDashboard: React.FC = () => {
             <div className="flex flex-wrap gap-4 items-center">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium">Başlanğıc:</span>
-                <Badge variant="secondary" className="bg-secondary text-secondary-foreground">
-                  {dateRange.start}
-                </Badge>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "justify-start text-left font-normal",
+                        "min-w-[180px]"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {dateRange.start}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Select 
+                      value={dateRange.start} 
+                      onValueChange={(value) => setDateRange(prev => ({ ...prev, start: value }))}
+                    >
+                      <SelectTrigger className="w-[200px] m-3">
+                        <SelectValue placeholder="Başlanğıc tarixi seçin" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-[200px] overflow-y-auto">
+                        {availableMonths.map((month) => (
+                          <SelectItem key={month} value={month}>
+                            {month}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </PopoverContent>
+                </Popover>
               </div>
+              
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium">Son:</span>
-                <Badge variant="secondary" className="bg-secondary text-secondary-foreground">
-                  {dateRange.end}
-                </Badge>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "justify-start text-left font-normal",
+                        "min-w-[180px]"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {dateRange.end}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Select 
+                      value={dateRange.end} 
+                      onValueChange={(value) => setDateRange(prev => ({ ...prev, end: value }))}
+                    >
+                      <SelectTrigger className="w-[200px] m-3">
+                        <SelectValue placeholder="Son tarixi seçin" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-[200px] overflow-y-auto">
+                        {availableMonths.map((month) => (
+                          <SelectItem key={month} value={month}>
+                            {month}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </PopoverContent>
+                </Popover>
               </div>
-              <Button variant="outline" size="sm">
-                Tarix Dəyişdir
-              </Button>
             </div>
           </CardContent>
         </Card>
