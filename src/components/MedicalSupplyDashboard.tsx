@@ -282,20 +282,30 @@ const MedicalSupplyDashboard: React.FC = () => {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={500}>
-              <LineChart data={filteredData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
+              <LineChart data={filteredData} margin={{ top: 20, right: 50, left: 80, bottom: 80 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" opacity={0.6} />
                 <XAxis 
                   dataKey="shortMonth" 
-                  tick={{ fontSize: 14 }}
+                  tick={{ fontSize: 14, fill: 'hsl(var(--muted-foreground))' }}
                   stroke="hsl(var(--muted-foreground))"
                   angle={-45}
                   textAnchor="end"
                   height={80}
+                  tickLine={{ stroke: 'hsl(var(--muted-foreground))' }}
                 />
                 <YAxis 
-                  tick={{ fontSize: 14 }}
+                  tick={{ fontSize: 14, fill: 'hsl(var(--muted-foreground))' }}
                   stroke="hsl(var(--muted-foreground))"
-                  tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
+                  tickFormatter={(value) => `${(value / 1000).toFixed(0)}k AZN`}
+                  width={80}
+                  tickLine={{ stroke: 'hsl(var(--muted-foreground))' }}
+                  axisLine={{ stroke: 'hsl(var(--muted-foreground))' }}
+                  label={{ 
+                    value: 'Məbləğ (AZN)', 
+                    angle: -90, 
+                    position: 'insideLeft',
+                    style: { textAnchor: 'middle', fontSize: '14px', fill: 'hsl(var(--muted-foreground))' }
+                  }}
                 />
                 <Tooltip 
                   contentStyle={{
