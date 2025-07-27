@@ -9,19 +9,12 @@ import { cn } from '@/lib/utils';
 import {
   LineChart,
   Line,
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
-  PieChart,
-  Pie,
-  Cell
+  Legend
 } from 'recharts';
 
 // Mock data for medical supplies
@@ -74,13 +67,6 @@ const generateMockData = () => {
   }));
 };
 
-const supplyCategories = [
-  { name: 'Əməliyyat materialları', value: 35, color: 'hsl(var(--purchase-color))' },
-  { name: 'Dərmanlar', value: 25, color: 'hsl(var(--sales-color))' },
-  { name: 'Tibbi avadanlıq', value: 20, color: 'hsl(var(--success))' },
-  { name: 'Diaqnostika', value: 12, color: 'hsl(var(--warning))' },
-  { name: 'Digər', value: 8, color: 'hsl(var(--info))' },
-];
 
 interface DateRange {
   start: string;
@@ -286,178 +272,70 @@ const MedicalSupplyDashboard: React.FC = () => {
           </Card>
         </div>
 
-        {/* Main Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Line Chart - Purchase vs Sales */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Alış və Satış Dinamikası</CardTitle>
-              <CardDescription>
-                Aylıq alış və satış məbləğləri (AZN)
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={350}>
-                <LineChart data={filteredData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
-                  <XAxis 
-                    dataKey="shortMonth" 
-                    tick={{ fontSize: 12 }}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <YAxis 
-                    tick={{ fontSize: 12 }}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
-                    }}
-                  />
-                  <Legend />
-                  <Line 
-                    type="monotone" 
-                    dataKey="purchase" 
-                    stroke="hsl(var(--purchase-color))" 
-                    strokeWidth={3}
-                    name="Alış (AZN)"
-                    dot={{ fill: 'hsl(var(--purchase-color))', strokeWidth: 2, r: 4 }}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="sales" 
-                    stroke="hsl(var(--sales-color))" 
-                    strokeWidth={3}
-                    name="Satış (AZN)"
-                    dot={{ fill: 'hsl(var(--sales-color))', strokeWidth: 2, r: 4 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* Area Chart - Profit Analysis */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Mənfəət Analizi</CardTitle>
-              <CardDescription>
-                Aylıq mənfəət dinamikası
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={350}>
-                <AreaChart data={filteredData.map(item => ({
-                  ...item,
-                  profit: item.sales - item.purchase
-                }))}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
-                  <XAxis 
-                    dataKey="shortMonth" 
-                    tick={{ fontSize: 12 }}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <YAxis 
-                    tick={{ fontSize: 12 }}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
-                    }}
-                  />
-                  <Area 
-                    type="monotone" 
-                    dataKey="profit" 
-                    stroke="hsl(var(--success))" 
-                    fill="hsl(var(--success) / 0.3)"
-                    strokeWidth={2}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* Bar Chart - Monthly Comparison */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Aylıq Müqayisə</CardTitle>
-              <CardDescription>
-                Son 6 ayın alış və satış müqayisəsi
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={350}>
-                <BarChart data={filteredData.slice(-6)}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
-                  <XAxis 
-                    dataKey="shortMonth" 
-                    tick={{ fontSize: 12 }}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <YAxis 
-                    tick={{ fontSize: 12 }}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
-                    }}
-                  />
-                  <Legend />
-                  <Bar 
-                    dataKey="purchase" 
-                    fill="hsl(var(--purchase-color))" 
-                    name="Alış"
-                    radius={[4, 4, 0, 0]}
-                  />
-                  <Bar 
-                    dataKey="sales" 
-                    fill="hsl(var(--sales-color))" 
-                    name="Satış"
-                    radius={[4, 4, 0, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* Pie Chart - Supply Categories */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Təchizat Kateqoriyaları</CardTitle>
-              <CardDescription>
-                Təchizatın kateqoriyalar üzrə bölgüsü (%)
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={350}>
-                <PieChart>
-                  <Pie
-                    data={supplyCategories}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {supplyCategories.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Main Chart - Purchase vs Sales */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl">Alış və Satış Dinamikası</CardTitle>
+            <CardDescription className="text-base">
+              Aylıq alış və satış məbləğləri (AZN) - Mavi: Alış, Qırmızı: Satış
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={500}>
+              <LineChart data={filteredData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
+                <XAxis 
+                  dataKey="shortMonth" 
+                  tick={{ fontSize: 14 }}
+                  stroke="hsl(var(--muted-foreground))"
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                />
+                <YAxis 
+                  tick={{ fontSize: 14 }}
+                  stroke="hsl(var(--muted-foreground))"
+                  tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
+                />
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: 'hsl(var(--card))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px',
+                    fontSize: '14px'
+                  }}
+                  formatter={(value: number, name: string) => [
+                    `${value.toLocaleString()} AZN`, 
+                    name === 'purchase' ? 'Alış' : 'Satış'
+                  ]}
+                  labelFormatter={(label) => `Ay: ${label}`}
+                />
+                <Legend 
+                  iconType="line"
+                  wrapperStyle={{ fontSize: '16px', paddingTop: '20px' }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="purchase" 
+                  stroke="hsl(var(--purchase-color))" 
+                  strokeWidth={4}
+                  name="Alış (AZN)"
+                  dot={{ fill: 'hsl(var(--purchase-color))', strokeWidth: 2, r: 6 }}
+                  activeDot={{ r: 8, stroke: 'hsl(var(--purchase-color))', strokeWidth: 2 }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="sales" 
+                  stroke="hsl(var(--sales-color))" 
+                  strokeWidth={4}
+                  name="Satış (AZN)"
+                  dot={{ fill: 'hsl(var(--sales-color))', strokeWidth: 2, r: 6 }}
+                  activeDot={{ r: 8, stroke: 'hsl(var(--sales-color))', strokeWidth: 2 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
 
         {/* Recent Activity */}
         <Card>
